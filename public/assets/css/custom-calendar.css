@@ -1,0 +1,32 @@
+/* FullCalendar Custom Spacing */
+.fc .fc-toolbar-chunk {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fc .fc-button-group {
+  gap: 0.25rem;
+}
+
+.fc .fc-button {
+  margin: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fc .fc-prev-button,
+.fc .fc-next-button {
+  padding: 0.5rem !important;
+}
+
+.fc .fc-today-button {
+  margin-left: 0.5rem !important;
+}
+
+/* Fix icon alignment - remove previous rules */
+.fc .fc-icon {
+  line-height: 0;
+  font-size: 1rem;
+}

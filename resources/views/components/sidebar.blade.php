@@ -89,6 +89,16 @@
             <li class="pc-item {{ request()->is('antrean-v2') ? 'active' : '' }}"><a class="pc-link" href="{{ route('antrean-v2.index') }}">Antrean V2</a></li>
           </ul>
         </li>
+        <li class="pc-item {{ request()->routeIs('rekam-medis.index') ? 'active' : '' }}">
+          <a href="{{ route('rekam-medis.index') }}" class="pc-link">
+            <span class="pc-micon">
+              <svg class="pc-icon">
+                <use xlink:href="#custom-clipboard"></use>
+              </svg>
+            </span>
+            <span class="pc-mtext">Rekam Medis</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>

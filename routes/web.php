@@ -10,6 +10,7 @@ use App\Http\Controllers\JadwalDokterController;
 use App\Http\Controllers\RegistrasiController;
 use App\Http\Controllers\AntreanController;
 use App\Http\Controllers\AntreanV2Controller;
+use App\Http\Controllers\RekamMedisController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'showLogin'])->name('login');
@@ -27,8 +28,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('registrasi', RegistrasiController::class);
     Route::resource('antrean', AntreanController::class);
     Route::get('antrean-v2', [AntreanV2Controller::class, 'index'])->name('antrean-v2.index');
+    Route::resource('rekam-medis', RekamMedisController::class);
     
     // API for AJAX
+    Route::get('/api/rekam-medis/search-pasien', [RekamMedisController::class, 'searchPasien']);
+    Route::get('/api/rekam-medis/pasien/{id}', [RekamMedisController::class, 'getPasienDetail']);
+    Route::get('/api/rekam-medis/{id}', [RekamMedisController::class, 'show']);
     Route::get('/api/jadwal-dokter/{dokter_id}', function($dokter_id) {
         return \App\Models\JadwalDokter::where('dokter_id', $dokter_id)
             ->where('status', 'aktif')

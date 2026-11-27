@@ -21,7 +21,7 @@
         </div>
 
         <!-- Day View -->
-        <AntreanDayView v-if="currentView === 'day'" :selectedDate="selectedDate" @dateChanged="fetchDataForDate" />
+        <AntreanDayView v-if="currentView === 'day'" :selectedDate="selectedDate" :initialAntreans="antreans" :initialShifts="shifts" :initialDoktersByShift="doktersByShift" @dateChanged="fetchDataForDate" />
 
         <!-- Month View -->
         <AntreanMonthView v-if="currentView === 'month'" :selectedDate="selectedDate" @switchToDay="switchToDay" @dateSelected="handleDateSelected" />
@@ -34,6 +34,12 @@
 import { ref } from 'vue'
 import AntreanDayView from './AntreanDayView.vue'
 import AntreanMonthView from './AntreanMonthView.vue'
+
+const props = defineProps({
+  antreans: Array,
+  shifts: Array,
+  doktersByShift: Object
+})
 
 const currentView = ref('day')
 const selectedDate = ref(new Date())

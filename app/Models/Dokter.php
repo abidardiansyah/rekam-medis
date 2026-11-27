@@ -20,4 +20,9 @@ class Dokter extends Model
     {
         return $this->hasMany(JadwalDokter::class, 'dokter_id');
     }
+    
+    public function scheduleAssignments()
+    {
+        return $this->morphMany(ScheduleAssignment::class, 'assignable');
+    }
 }

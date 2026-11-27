@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Registrasi;
 use App\Models\Dokter;
+use App\Models\WorkSchedule;
 use Illuminate\Http\Request;
 
 class AntreanV2Controller extends Controller
@@ -29,30 +30,26 @@ class AntreanV2Controller extends Controller
         
         $hariIni = $hariMapping[date('l', strtotime($date))];
         
-        $shifts = [
-            [
-                'id' => 1,
-                'name' => 'Shift 1 Morning',
-                'start_time' => '08:00',
-                'end_time' => '13:00',
-                'color' => '#3b82f6'
-            ],
-            [
-                'id' => 2,
-                'name' => 'Shift 2 Afternoon',
-                'start_time' => '13:00',
-                'end_time' => '19:00',
-                'color' => '#10b981'
-            ]
-        ];
+        $shifts = WorkSchedule::where('status', 'active')
+            ->orderBy('start_time')
+            ->get()
+            ->map(function($schedule) {
+                return [
+                    'id' => $schedule->id,
+                    'name' => $schedule->name,
+                    'start_time' => substr($schedule->start_time, 0, 5),
+                    'end_time' => substr($schedule->end_time, 0, 5),
+                    'color' => $schedule->color
+                ];
+            })
+            ->toArray();
         
         $doktersByShift = [];
         foreach ($shifts as $shift) {
-            $doktersByShift[$shift['id']] = Dokter::whereHas('jadwalDokters', function($query) use ($hariIni, $shift) {
-                    $query->where('hari', $hariIni)
-                          ->where('status', 'aktif')
-                          ->where('jam_mulai', '>=', $shift['start_time'])
-                          ->where('jam_mulai', '<', $shift['end_time']);
+            $doktersByShift[$shift['id']] = Dokter::whereHas('scheduleAssignments', function($query) use ($hariIni, $shift) {
+                    $query->where('work_schedule_id', $shift['id'])
+                          ->where('day_of_week', $hariIni)
+                          ->where('status', 'active');
                 })
                 ->where('status', 'aktif')
                 ->orderBy('nama')

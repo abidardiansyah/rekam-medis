@@ -56,7 +56,7 @@
             <span class="pc-mtext">Dashboard</span>
           </a>
         </li>
-        <li class="pc-item pc-hasmenu {{ request()->is('dokter*') || request()->is('perawat*') || request()->is('pasien*') || request()->is('jadwal-dokter*') ? 'active pc-trigger' : '' }}">
+        <li class="pc-item pc-hasmenu {{ request()->is('dokter*') || request()->is('perawat*') || request()->is('pasien*') || request()->is('work-schedules*') ? 'active pc-trigger' : '' }}">
           <a href="#!" class="pc-link">
             <span class="pc-micon">
               <svg class="pc-icon">
@@ -70,7 +70,7 @@
             <li class="pc-item {{ request()->is('dokter*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('dokter.index') }}">Dokter</a></li>
             <li class="pc-item {{ request()->is('perawat*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('perawat.index') }}">Perawat</a></li>
             <li class="pc-item {{ request()->is('pasien*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('pasien.index') }}">Pasien</a></li>
-            <li class="pc-item {{ request()->is('jadwal-dokter*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('jadwal-dokter.index') }}">Jadwal Dokter</a></li>
+            <li class="pc-item {{ request()->is('work-schedules*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('work-schedules.index') }}">Work Schedules</a></li>
           </ul>
         </li>
         <li class="pc-item pc-hasmenu {{ request()->is('registrasi*') || request()->is('antrean*') ? 'active pc-trigger' : '' }}">

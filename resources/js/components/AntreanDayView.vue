@@ -17,10 +17,13 @@
     <!-- Shift Sections -->
     <div v-for="shift in shiftsWithDoctors" :key="shift.id" class="border rounded-lg bg-white shadow-sm overflow-hidden mb-4">
       <!-- Shift Header -->
-      <div class="px-6 py-3 border-b flex items-center justify-between bg-gradient-to-r from-gray-50 to-gray-100" :style="{ borderLeftWidth: '4px', borderLeftColor: shift.color }">
-        <div>
-          <h3 class="font-semibold text-gray-900">{{ shift.name }}</h3>
-          <p class="text-sm text-gray-500">{{ shift.start_time }} - {{ shift.end_time }}</p>
+      <div @click="toggleShift(shift.id)" class="px-6 py-3 border-b flex items-center justify-between bg-gradient-to-r from-gray-50 to-gray-100 cursor-pointer hover:from-gray-100 hover:to-gray-200 transition-colors" :style="{ borderLeftWidth: '4px', borderLeftColor: shift.color }">
+        <div class="flex items-center gap-3">
+          <i :class="['ti', isShiftCollapsed(shift.id) ? 'ti-chevron-right' : 'ti-chevron-down', 'text-gray-600']"></i>
+          <div>
+            <h3 class="font-semibold text-gray-900">{{ shift.name }}</h3>
+            <p class="text-sm text-gray-500">{{ shift.start_time }} - {{ shift.end_time }}</p>
+          </div>
         </div>
         <span class="px-3 py-1 rounded-full text-xs font-semibold text-white" :style="{ backgroundColor: shift.color }">
           {{ shift.doctors.length }} {{ shift.doctors.length === 1 ? 'Doctor' : 'Doctors' }}
@@ -28,15 +31,45 @@
       </div>
 
       <!-- Horizontal Timeline -->
-      <div class="overflow-x-auto">
-        <!-- Empty State Skeleton -->
-        <div v-if="shift.doctors.length === 0" class="p-8 text-center">
-          <div class="flex flex-col items-center gap-3">
-            <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-              <i class="ti ti-calendar-off text-3xl text-gray-400"></i>
+      <div v-show="!isShiftCollapsed(shift.id)" class="overflow-x-auto">
+        <!-- Empty State with Skeleton -->
+        <div v-if="shift.doctors.length === 0" class="p-8">
+          <div class="flex flex-col items-center gap-4 text-center">
+            <!-- Animated Icon -->
+            <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center animate-pulse">
+              <i class="ti ti-calendar-off text-4xl text-gray-400"></i>
             </div>
-            <p class="text-gray-500 font-medium">Tidak ada jadwal dokter</p>
-            <p class="text-sm text-gray-400">Belum ada dokter yang terjadwal pada shift ini</p>
+            
+            <!-- Message -->
+            <div class="space-y-2">
+              <p class="text-gray-600 font-semibold text-base">Tidak ada jadwal dokter</p>
+              <p class="text-sm text-gray-500">Belum ada dokter yang terjadwal pada shift ini</p>
+            </div>
+            
+            <!-- Skeleton Cards -->
+            <div class="w-full max-w-2xl mt-4 space-y-3">
+              <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg animate-pulse">
+                <div class="w-12 h-12 rounded-full bg-gray-200"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg animate-pulse">
+                <div class="w-12 h-12 rounded-full bg-gray-200"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+                  <div class="h-3 bg-gray-200 rounded w-1/3"></div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg animate-pulse">
+                <div class="w-12 h-12 rounded-full bg-gray-200"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-4 bg-gray-200 rounded w-4/5"></div>
+                  <div class="h-3 bg-gray-200 rounded w-2/5"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -135,7 +168,10 @@ import { ref, computed, watch, onMounted } from 'vue'
 import axios from 'axios'
 
 const props = defineProps({
-  selectedDate: Date
+  selectedDate: Date,
+  initialAntreans: Array,
+  initialShifts: Array,
+  initialDoktersByShift: Object
 })
 
 const emit = defineEmits(['dateChanged'])
@@ -143,10 +179,11 @@ const emit = defineEmits(['dateChanged'])
 const currentDate = ref(props.selectedDate || new Date())
 const selectedEvent = ref(null)
 const showDetailDialog = ref(false)
-const antreans = ref([])
-const shifts = ref([])
-const doktersByShift = ref({})
+const antreans = ref(props.initialAntreans || [])
+const shifts = ref(props.initialShifts || [])
+const doktersByShift = ref(props.initialDoktersByShift || {})
 const loading = ref(false)
+const collapsedShifts = ref({})
 
 const formattedDate = computed(() => {
   return currentDate.value.toLocaleDateString('id-ID', {
@@ -183,15 +220,17 @@ const fetchDataForDate = async (date) => {
   }
 }
 
-watch(() => props.selectedDate, (newDate) => {
-  if (newDate) {
+watch(() => props.selectedDate, (newDate, oldDate) => {
+  if (newDate && newDate !== oldDate) {
     currentDate.value = newDate
     fetchDataForDate(newDate)
   }
-}, { immediate: true })
+})
 
 onMounted(() => {
-  fetchDataForDate(currentDate.value)
+  if (!props.initialShifts || props.initialShifts.length === 0) {
+    fetchDataForDate(currentDate.value)
+  }
 })
 
 const shiftsWithDoctors = computed(() => {
@@ -200,6 +239,14 @@ const shiftsWithDoctors = computed(() => {
     doctors: doktersByShift.value[shift.id] || []
   }))
 })
+
+const toggleShift = (shiftId) => {
+  collapsedShifts.value[shiftId] = !collapsedShifts.value[shiftId]
+}
+
+const isShiftCollapsed = (shiftId) => {
+  return collapsedShifts.value[shiftId] || false
+}
 
 const getHoursForShift = (shift) => {
   const startHour = parseInt(shift.start_time.split(':')[0])

@@ -103,50 +103,6 @@
             </div>
           </div>
         </li>
-        <li class="dropdown pc-h-item header-user-profile">
-          <a class="pc-head-link dropdown-toggle me-0" data-pc-toggle="dropdown" href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
-            <img src="{{ asset('assets/images/user/avatar-1.jpg') }}" alt="user-image" class="user-avtar" />
-          </a>
-          <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
-            <div class="dropdown-header flex items-center justify-between">
-              <h5 class="m-0">Profile</h5>
-            </div>
-            <div class="dropdown-body">
-              <div class="profile-notification-scroll relative" style="max-height: calc(100vh - 225px)">
-                <div class="flex mb-1">
-                  <div class="shrink-0">
-                    <img src="{{ asset('assets/images/user/avatar-1.jpg') }}" alt="user-image" class="wid-35 rounded-circle" />
-                  </div>
-                  <div class="grow ms-3">
-                    <h6 class="mb-1">{{ auth()->user()->name ?? 'Admin' }}</h6>
-                    <span>{{ auth()->user()->email ?? 'admin@example.com' }}</span>
-                  </div>
-                </div>
-                <hr class="border-secondary-500/10 my-4" />
-                <p class="text-span">Settings</p>
-                <a href="#!" class="dropdown-item">
-                  <span>
-                    <svg class="pc-icon text-muted me-2">
-                      <use xlink:href="#custom-setting-outline"></use>
-                    </svg>
-                    <span>Account Settings</span>
-                  </span>
-                </a>
-                <a href="{{ route('logout') }}" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form-profile').submit();">
-                  <span>
-                    <svg class="pc-icon text-muted me-2">
-                      <use xlink:href="#custom-logout-1-outline"></use>
-                    </svg>
-                    <span>Logout</span>
-                  </span>
-                </a>
-                <form id="logout-form-profile" action="{{ route('logout') }}" method="POST" class="hidden">
-                  @csrf
-                </form>
-              </div>
-            </div>
-          </div>
-        </li>
       </ul>
     </div>
   </div>

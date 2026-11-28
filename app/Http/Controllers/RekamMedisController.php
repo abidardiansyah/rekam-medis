@@ -150,6 +150,12 @@ class RekamMedisController extends Controller
         return response()->json($dokters);
     }
 
+    public function getObats()
+    {
+        $obats = \App\Models\Obat::where('status', 'aktif')->get(['id', 'nama_obat', 'satuan', 'stok']);
+        return response()->json($obats);
+    }
+
     public function update(UpdateRekamMedisRequest $request, $id)
     {
         $rekamMedis = RekamMedis::findOrFail($id);

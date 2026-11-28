@@ -359,6 +359,19 @@
                         <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Rencana Tindakan</label>
                         <textarea name="rencana_tindakan" rows="2" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none; resize: vertical;"></textarea>
                     </div>
+                    
+                    <!-- Resep Obat Section -->
+                    <div style="margin-top: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <label style="font-size: 14px; font-weight: 500; color: #374151;">Resep Obat</label>
+                            <button type="button" onclick="addObatItem()" class="btn btn-sm btn-primary">
+                                <i class="ti ti-plus"></i> Tambah Obat
+                            </button>
+                        </div>
+                        <div id="obatContainer"></div>
+                        <input type="hidden" name="resep_obat" id="resepObatData">
+                    </div>
+                    
                     <div style="margin-top: 20px;">
                         <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Hasil Lab</label>
                         <textarea name="hasil_lab" rows="2" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none; resize: vertical;"></textarea>
@@ -762,7 +775,8 @@ async function openAddRecordModal() {
         return;
     }
     
-    // Load doctors
+    // Load doctors and obats
+    await loadMasterObats();
     const res = await fetch('/api/dokters');
     const dokters = await res.json();
     const dokterSelect = document.querySelector('#addRecordForm select[name="dokter_id"]');
@@ -780,6 +794,103 @@ function closeAddModal() {
     document.getElementById('addModal').style.display = 'none';
     document.body.style.overflow = '';
     document.getElementById('addRecordForm').reset();
+    document.getElementById('obatContainer').innerHTML = '';
+    obatItems = [];
+}
+
+let obatItems = [];
+let masterObats = [];
+
+async function loadMasterObats() {
+    const res = await fetch('/api/obats');
+    masterObats = await res.json();
+}
+
+function addObatItem() {
+    const id = Date.now();
+    const item = {
+        id: id,
+        obat_id: '',
+        medication: '',
+        dosage: '',
+        frequency: '',
+        duration: '',
+        notes: ''
+    };
+    obatItems.push(item);
+    renderObatItems();
+}
+
+function removeObatItem(id) {
+    obatItems = obatItems.filter(item => item.id !== id);
+    renderObatItems();
+}
+
+function updateObatItem(id, field, value) {
+    const item = obatItems.find(i => i.id === id);
+    if (item) {
+        item[field] = value;
+        if (field === 'obat_id') {
+            const obat = masterObats.find(o => o.id == value);
+            if (obat) {
+                item.medication = obat.nama_obat;
+            }
+        }
+        updateResepObatData();
+    }
+}
+
+function updateResepObatData() {
+    document.getElementById('resepObatData').value = JSON.stringify(obatItems);
+}
+
+function renderObatItems() {
+    const container = document.getElementById('obatContainer');
+    
+    if (obatItems.length === 0) {
+        container.innerHTML = '<p style="color: #9CA3AF; font-size: 14px; text-align: center; padding: 20px;">Belum ada obat ditambahkan</p>';
+        return;
+    }
+    
+    container.innerHTML = obatItems.map(item => `
+        <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h4 style="font-size: 14px; font-weight: 600; color: #111827; margin: 0;">Obat #${obatItems.indexOf(item) + 1}</h4>
+                <button type="button" onclick="removeObatItem(${item.id})" style="background: #EF4444; color: white; border: none; padding: 4px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                    <i class="ti ti-trash"></i> Hapus
+                </button>
+            </div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div>
+                    <label style="display: block; font-size: 12px; color: #6B7280; margin-bottom: 4px;">Nama Obat</label>
+                    <select onchange="updateObatItem(${item.id}, 'obat_id', this.value)" style="width: 100%; padding: 8px; border: 1px solid #E5E7EB; border-radius: 4px; font-size: 14px;">
+                        <option value="">Pilih Obat</option>
+                        ${masterObats.map(obat => `<option value="${obat.id}" ${item.obat_id == obat.id ? 'selected' : ''}>${obat.nama_obat} (${obat.satuan})</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 12px; color: #6B7280; margin-bottom: 4px;">Dosis</label>
+                    <input type="text" value="${item.dosage}" onchange="updateObatItem(${item.id}, 'dosage', this.value)" placeholder="3x1" style="width: 100%; padding: 8px; border: 1px solid #E5E7EB; border-radius: 4px; font-size: 14px;">
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="display: block; font-size: 12px; color: #6B7280; margin-bottom: 4px;">Frekuensi</label>
+                    <input type="text" value="${item.frequency}" onchange="updateObatItem(${item.id}, 'frequency', this.value)" placeholder="Setelah makan" style="width: 100%; padding: 8px; border: 1px solid #E5E7EB; border-radius: 4px; font-size: 14px;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 12px; color: #6B7280; margin-bottom: 4px;">Durasi</label>
+                    <input type="text" value="${item.duration}" onchange="updateObatItem(${item.id}, 'duration', this.value)" placeholder="7 hari" style="width: 100%; padding: 8px; border: 1px solid #E5E7EB; border-radius: 4px; font-size: 14px;">
+                </div>
+            </div>
+            <div style="margin-top: 12px;">
+                <label style="display: block; font-size: 12px; color: #6B7280; margin-bottom: 4px;">Catatan</label>
+                <input type="text" value="${item.notes}" onchange="updateObatItem(${item.id}, 'notes', this.value)" placeholder="Catatan tambahan" style="width: 100%; padding: 8px; border: 1px solid #E5E7EB; border-radius: 4px; font-size: 14px;">
+            </div>
+        </div>
+    `).join('');
+    
+    updateResepObatData();
 }
 
 document.getElementById('addRecordForm').addEventListener('submit', async (e) => {
@@ -788,6 +899,15 @@ document.getElementById('addRecordForm').addEventListener('submit', async (e) =>
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     data.pasien_id = selectedPatient.id;
+    
+    // Parse resep_obat JSON
+    if (data.resep_obat) {
+        try {
+            data.resep_obat = JSON.parse(data.resep_obat);
+        } catch (e) {
+            data.resep_obat = [];
+        }
+    }
     
     try {
         const res = await fetch('/api/rekam-medis', {

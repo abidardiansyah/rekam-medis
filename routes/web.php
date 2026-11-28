@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/rekam-medis/pasien/{id}', [RekamMedisController::class, 'getPasienDetail']);
     Route::get('/api/rekam-medis/{id}', [RekamMedisController::class, 'show']);
     Route::get('/api/dokters', [RekamMedisController::class, 'getDokters']);
+    Route::get('/api/obats', [RekamMedisController::class, 'getObats']);
     Route::post('/api/rekam-medis', [RekamMedisController::class, 'store']);
     Route::put('/api/rekam-medis/{id}', [RekamMedisController::class, 'update']);
     Route::delete('/api/rekam-medis/{id}', [RekamMedisController::class, 'destroy']);

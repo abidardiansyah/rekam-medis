@@ -31,7 +31,7 @@
       </div>
 
       <!-- Horizontal Timeline -->
-      <div v-show="!isShiftCollapsed(shift.id)" class="overflow-x-auto">
+      <div v-show="!isShiftCollapsed(shift.id)" class="overflow-x-auto" style="overflow-y: visible;">
         <!-- Empty State with Skeleton -->
         <div v-if="shift.doctors.length === 0" class="p-8">
           <div class="flex flex-col items-center gap-4 text-center">
@@ -97,9 +97,9 @@
             <!-- Timeline Cells -->
             <div v-for="hour in getHoursForShift(shift)" :key="`${doctor.id}-${hour.hour}`" :class="['timeline-track-cell', index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50']">
               <div v-for="event in getEventsForDoctorAtHour(doctor.id, hour.hour, shift)" :key="event.id" :style="getEventPositionInCell(event, shift)" class="timeline-event">
-                <div :class="['event-card', getEventClass(event.status)]" @click="showDetail(event)">
+                 <div :class="['event-card', getEventClass(event.status)]" @click="showDetail(event)">
                   <div class="w-1.5 h-1.5 rounded-full flex-shrink-0" :class="getDotClass(event.status)"></div>
-                  <span class="text-xs font-medium truncate">{{ event.pasien.nama }}</span>
+                  <span class="text-xs font-medium">{{ event.pasien.nama }}</span>
                 </div>
               </div>
             </div>
@@ -109,52 +109,52 @@
     </div>
 
     <!-- Detail Modal -->
-    <div v-if="showDetailDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @click="closeDialog">
-      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6" @click.stop>
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900">Detail Antrean</h3>
-          <button @click="closeDialog" class="text-gray-400 hover:text-gray-600">
+    <div v-if="showDetailDialog" class="modal-overlay" @click="closeDialog">
+      <div class="modal-container" @click.stop>
+        <div class="modal-header">
+          <h3 class="modal-title">Detail Antrean</h3>
+          <button @click="closeDialog" class="modal-close-btn">
             <i class="ti ti-x text-xl"></i>
           </button>
         </div>
         
-        <div v-if="selectedEvent" class="space-y-4">
-          <div>
-            <label class="text-sm font-medium text-gray-500">Nama Pasien</label>
-            <p class="text-base font-semibold text-gray-900">{{ selectedEvent.pasien.nama }}</p>
+        <div v-if="selectedEvent" class="modal-body">
+          <div class="modal-field">
+            <label class="modal-label">Nama Pasien</label>
+            <p class="modal-value font-semibold">{{ selectedEvent.pasien.nama }}</p>
           </div>
           
-          <div>
-            <label class="text-sm font-medium text-gray-500">Dokter</label>
-            <p class="text-base text-gray-900">{{ selectedEvent.dokter.nama }}</p>
+          <div class="modal-field">
+            <label class="modal-label">Dokter</label>
+            <p class="modal-value">{{ selectedEvent.dokter.nama }}</p>
           </div>
           
-          <div>
-            <label class="text-sm font-medium text-gray-500">Keluhan</label>
-            <p class="text-base text-gray-900">{{ selectedEvent.keluhan }}</p>
+          <div class="modal-field">
+            <label class="modal-label">Keluhan</label>
+            <p class="modal-value">{{ selectedEvent.keluhan || '-' }}</p>
           </div>
           
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="text-sm font-medium text-gray-500">Jam Kunjungan</label>
-              <p class="text-base text-gray-900">{{ selectedEvent.jam_kunjungan.substring(0, 5) }}</p>
+          <div class="modal-grid">
+            <div class="modal-field">
+              <label class="modal-label">Jam Kunjungan</label>
+              <p class="modal-value">{{ selectedEvent.jam_kunjungan.substring(0, 5) }}</p>
             </div>
-            <div>
-              <label class="text-sm font-medium text-gray-500">No. Registrasi</label>
-              <p class="text-base text-gray-900">{{ selectedEvent.no_registrasi }}</p>
+            <div class="modal-field">
+              <label class="modal-label">No. Registrasi</label>
+              <p class="modal-value">{{ selectedEvent.no_registrasi }}</p>
             </div>
           </div>
           
-          <div>
-            <label class="text-sm font-medium text-gray-500">Status</label>
-            <span :class="['inline-block px-3 py-1 rounded-full text-xs font-semibold', getStatusBadgeClass(selectedEvent.status)]">
+          <div class="modal-field">
+            <label class="modal-label">Status</label>
+            <span :class="['modal-badge', getStatusBadgeClass(selectedEvent.status)]">
               {{ selectedEvent.status.charAt(0).toUpperCase() + selectedEvent.status.slice(1) }}
             </span>
           </div>
         </div>
         
-        <div class="mt-6 flex justify-end">
-          <button @click="closeDialog" class="px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition-colors">
+        <div class="modal-footer">
+          <button @click="closeDialog" class="modal-btn-close">
             Tutup
           </button>
         </div>
@@ -272,23 +272,45 @@ const getEventsForDoctorAtHour = (doctorId, hour, shift) => {
   
   return antreans.value.filter(a => {
     if (a.dokter_id !== doctorId) return false
-    const eventHour = parseInt(a.jam_kunjungan.split(':')[0])
+    
+    // Use jam_mulai if available, otherwise jam_kunjungan
+    const startTime = a.jam_mulai || a.jam_kunjungan
+    const eventHour = parseInt(startTime.split(':')[0])
+    
     return eventHour === hour && eventHour >= shiftStartHour && eventHour < shiftEndHour
-  }).sort((a, b) => a.jam_kunjungan.localeCompare(b.jam_kunjungan))
+  }).sort((a, b) => {
+    const aStart = a.jam_mulai || a.jam_kunjungan
+    const bStart = b.jam_mulai || b.jam_kunjungan
+    return aStart.localeCompare(bStart)
+  })
 }
 
 const getEventPositionInCell = (event, shift) => {
-  const [hour, minute] = event.jam_kunjungan.split(':').map(Number)
-  const minutePercent = (minute / 60) * 100
-  const duration = 20
-  const widthPercent = (duration / 60) * 100
+  // Use jam_mulai and jam_selesai if available
+  const startTime = event.jam_mulai || event.jam_kunjungan
+  const endTime = event.jam_selesai || event.jam_kunjungan
   
-  // Z-index based on minute - later appointments have higher z-index
-  const zIndex = 10 + minute
+  const [startHour, startMinute] = startTime.split(':').map(Number)
+  const [endHour, endMinute] = endTime.split(':').map(Number)
+  
+  // Calculate position within the hour cell (0-100%)
+  const minutePercent = (startMinute / 60) * 100
+  
+  // Calculate duration in minutes
+  const startTotalMinutes = startHour * 60 + startMinute
+  const endTotalMinutes = endHour * 60 + endMinute
+  const durationMinutes = endTotalMinutes - startTotalMinutes
+  
+  // Calculate width as percentage of one hour cell
+  // If duration spans multiple hours, it will overflow to next cells
+  const widthPercent = (durationMinutes / 60) * 100
+  
+  // Z-index based on start minute to prevent overlap
+  const zIndex = 10 + startMinute
   
   return {
     left: `${minutePercent}%`,
-    width: `${Math.min(widthPercent, 100 - minutePercent)}%`,
+    width: `${widthPercent}%`,
     top: '50%',
     transform: 'translateY(-50%)',
     zIndex: zIndex
@@ -352,6 +374,7 @@ const goToToday = () => {
   display: grid;
   min-width: 1200px;
   border-collapse: collapse;
+  overflow: visible;
 }
 
 .timeline-header-cell {
@@ -362,6 +385,7 @@ const goToToday = () => {
   display: flex;
   align-items: center;
   background-color: white;
+  overflow: visible;
 }
 
 .timeline-time-cell {
@@ -373,6 +397,7 @@ const goToToday = () => {
   align-items: center;
   justify-content: center;
   text-align: center;
+  overflow: visible;
 }
 
 .timeline-doctor-cell {
@@ -383,6 +408,7 @@ const goToToday = () => {
   align-items: center;
   gap: 12px;
   min-height: 64px;
+  overflow: visible;
 }
 
 .timeline-track-cell {
@@ -390,11 +416,15 @@ const goToToday = () => {
   border-bottom: 1px solid rgb(229 231 235);
   position: relative;
   min-height: 64px;
+  overflow: visible;
 }
 
 .timeline-event {
   position: absolute;
   padding: 0;
+  z-index: 10;
+  overflow: visible;
+  pointer-events: auto;
 }
 
 .event-card {
@@ -409,6 +439,20 @@ const goToToday = () => {
   border-width: 1px;
   border-style: solid;
   box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  min-width: 60px;
+  pointer-events: auto;
+}
+
+.event-card span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 }
 
 .event-card:hover {
@@ -445,5 +489,128 @@ const goToToday = () => {
 
 .event-completed:hover {
   background-color: rgb(187 247 208);
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 16px;
+}
+
+.modal-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 500px;
+  width: 100%;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgb(229 231 235);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgb(17 24 39);
+  margin: 0;
+}
+
+.modal-close-btn {
+  color: rgb(156 163 175);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  color: rgb(75 85 99);
+  background-color: rgb(243 244 246);
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-field {
+  margin-bottom: 16px;
+}
+
+.modal-field:last-child {
+  margin-bottom: 0;
+}
+
+.modal-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgb(107 114 128);
+  margin-bottom: 4px;
+}
+
+.modal-value {
+  font-size: 16px;
+  color: rgb(17 24 39);
+  margin: 0;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.modal-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgb(229 231 235);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-btn-close {
+  padding: 10px 20px;
+  background-color: rgb(6 182 212);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modal-btn-close:hover {
+  background-color: rgb(8 145 178);
 }
 </style>

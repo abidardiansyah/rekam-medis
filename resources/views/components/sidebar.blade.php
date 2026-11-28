@@ -70,7 +70,8 @@
             <li class="pc-item {{ request()->is('dokter*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('dokter.index') }}">Dokter</a></li>
             <li class="pc-item {{ request()->is('perawat*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('perawat.index') }}">Perawat</a></li>
             <li class="pc-item {{ request()->is('pasien*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('pasien.index') }}">Pasien</a></li>
-            <li class="pc-item {{ request()->is('work-schedules*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('work-schedules.index') }}">Work Schedules</a></li>
+            <li class="pc-item {{ request()->is('work-schedules*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('work-schedules.index') }}">Jadwal Dokter</a></li>
+            <li class="pc-item {{ request()->is('apotek*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('apotek.index') }}">Obat</a></li>
           </ul>
         </li>
         <li class="pc-item pc-hasmenu {{ request()->is('registrasi*') || request()->is('antrean*') ? 'active pc-trigger' : '' }}">
@@ -80,12 +81,11 @@
                 <use xlink:href="#custom-note-1"></use>
               </svg>
             </span>
-            <span class="pc-mtext">Registrasi</span>
+            <span class="pc-mtext">Layanan</span>
             <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
             <li class="pc-item {{ request()->is('registrasi*') ? 'active' : '' }}"><a class="pc-link" href="{{ route('registrasi.index') }}">Registrasi Pasien</a></li>
-            <li class="pc-item {{ request()->is('antrean') && !request()->is('antrean-v2') ? 'active' : '' }}"><a class="pc-link" href="{{ route('antrean.index') }}">Antrean</a></li>
             <li class="pc-item {{ request()->is('antrean-v2') ? 'active' : '' }}"><a class="pc-link" href="{{ route('antrean-v2.index') }}">Antrean V2</a></li>
           </ul>
         </li>

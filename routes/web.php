@@ -12,6 +12,7 @@ use App\Http\Controllers\AntreanController;
 use App\Http\Controllers\AntreanV2Controller;
 use App\Http\Controllers\RekamMedisController;
 use App\Http\Controllers\WorkScheduleController;
+use App\Http\Controllers\ApotekController;
 
 Route::middleware('guest')->group(function () {
     Route::get('/', [AuthController::class, 'showLogin'])->name('login');
@@ -45,3 +46,5 @@ Route::middleware('auth')->group(function () {
             ->get();
     });
 });
+
+Route::resource('apotek', ApotekController::class);

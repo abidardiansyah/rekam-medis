@@ -21,11 +21,18 @@
     <div class="card table-card">
       <div class="card-header flex items-center justify-between">
         <h5>Daftar Perawat</h5>
-        <a href="{{ route('perawat.create') }}" class="btn btn-primary">
+        <button type="button" class="btn btn-primary" data-pc-toggle="modal" data-pc-target="#createModal">
           <i class="ti ti-plus"></i> Tambah Perawat
-        </a>
+        </button>
       </div>
       <div class="card-body !pt-3">
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-bottom: 20px;">
+          {{ session('success') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        @endif
+
         <div class="table-responsive" id="tableContainer">
           <table class="table table-hover" id="pc-dt-simple">
             <thead>
@@ -129,6 +136,62 @@
         @endif
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true" data-pc-modal-show="false">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 880px;">
+    <div class="modal-content">
+      <div class="modal-header" style="padding: 18px 24px; border-bottom: 1px solid #E5E7EB;">
+        <h5 class="modal-title" style="font-size: 18px; font-weight: 600; margin: 0;">Tambah Perawat</h5>
+        <button type="button" class="btn-close" data-pc-modal-dismiss="#createModal" aria-label="Close"></button>
+      </div>
+      <form action="{{ route('perawat.store') }}" method="POST">
+        @csrf
+        <div class="modal-body" style="padding: 24px; max-height: 85vh; overflow-y: auto;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Nama <span class="text-danger">*</span></label>
+                <input type="text" name="nama" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">No. STR <span class="text-danger">*</span></label>
+                <input type="text" name="no_str" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+              <div style="margin-bottom: 0;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Email</label>
+                <input type="email" name="email" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;">
+              </div>
+            </div>
+            <div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Telepon <span class="text-danger">*</span></label>
+                <input type="text" name="telepon" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Alamat</label>
+                <textarea name="alamat" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 86px; font-size: 14px; resize: none;"></textarea>
+              </div>
+              <div style="margin-bottom: 0;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Status <span class="text-danger">*</span></label>
+                <select name="status" class="form-select" style="height: 40px; font-size: 14px; padding: 8px 12px;" required>
+                  <option value="aktif">Aktif</option>
+                  <option value="nonaktif">Nonaktif</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #E5E7EB; display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-secondary" data-pc-modal-dismiss="#createModal" style="padding: 8px 16px; font-size: 14px;">Batal</button>
+          <button type="submit" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">
+            <i class="ti ti-device-floppy"></i> Simpan
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

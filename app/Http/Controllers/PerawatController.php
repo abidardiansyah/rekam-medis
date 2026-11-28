@@ -47,7 +47,18 @@ class PerawatController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'no_str' => 'required|string|unique:perawats,no_str',
+            'telepon' => 'required|string',
+            'email' => 'nullable|email',
+            'alamat' => 'nullable|string',
+            'status' => 'required|in:aktif,nonaktif',
+        ]);
+
+        Perawat::create($validated);
+
+        return redirect()->route('perawat.index')->with('success', 'Data perawat berhasil ditambahkan');
     }
 
     /**

@@ -2,7 +2,7 @@
   <div class="navbar-wrapper">
     <div class="m-header flex items-center py-4 px-6 h-header-height">
       <a href="{{ route('dashboard') }}" class="b-brand flex items-center gap-3">
-        <img src="{{ asset('assets/images/logo-dark.svg') }}" class="img-fluid logo-lg" alt="logo" />
+        <span style="font-size: 24px; font-weight: 700; color: #1e293b;">Dentalio</span>
         <span class="badge bg-success-500/10 text-success-500 rounded-full theme-version">v1.0</span>
       </a>
     </div>

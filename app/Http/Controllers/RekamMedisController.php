@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pasien;
 use App\Models\RekamMedis;
+use App\Models\Dokter;
+use App\Http\Requests\StoreRekamMedisRequest;
+use App\Http\Requests\UpdateRekamMedisRequest;
 use Carbon\Carbon;
 
 class RekamMedisController extends Controller
@@ -95,8 +98,8 @@ class RekamMedisController extends Controller
             'tinggi_badan' => $rekamMedis->tinggi_badan,
             'bmi' => $rekamMedis->bmi,
             'saturasi_oksigen' => $rekamMedis->saturasi_oksigen,
-            'diagnosis_utama' => $rekamMedis->diagnosa,
-            'kode_diagnosis' => $rekamMedis->diagnosa_code,
+            'diagnosa' => $rekamMedis->diagnosa,
+            'diagnosa_code' => $rekamMedis->diagnosa_code,
             'rencana_tindakan' => $rekamMedis->rencana_tindakan,
             'resep_obat' => $rekamMedis->resep_obat,
             'hasil_lab' => $rekamMedis->hasil_lab,
@@ -114,6 +117,67 @@ class RekamMedisController extends Controller
                 'nama' => $rekamMedis->dokter->nama,
                 'spesialisasi' => $rekamMedis->dokter->spesialisasi,
             ]
+        ]);
+    }
+
+    public function store(StoreRekamMedisRequest $request)
+    {
+        $data = $request->validated();
+        
+        // Generate record number
+        $lastRecord = RekamMedis::latest('id')->first();
+        $nextNumber = $lastRecord ? intval(substr($lastRecord->record_number, 3)) + 1 : 1;
+        $data['record_number'] = 'RM-' . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
+        
+        // Calculate BMI if height and weight provided
+        if (!empty($data['berat_badan']) && !empty($data['tinggi_badan'])) {
+            $tinggiMeter = $data['tinggi_badan'] / 100;
+            $data['bmi'] = round($data['berat_badan'] / ($tinggiMeter * $tinggiMeter), 1);
+        }
+        
+        $rekamMedis = RekamMedis::create($data);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Rekam medis berhasil ditambahkan',
+            'data' => $rekamMedis->load(['pasien', 'dokter'])
+        ]);
+    }
+
+    public function getDokters()
+    {
+        $dokters = Dokter::where('status', 'aktif')->get(['id', 'nama', 'spesialisasi']);
+        return response()->json($dokters);
+    }
+
+    public function update(UpdateRekamMedisRequest $request, $id)
+    {
+        $rekamMedis = RekamMedis::findOrFail($id);
+        $data = $request->validated();
+        
+        // Calculate BMI if height and weight provided
+        if (!empty($data['berat_badan']) && !empty($data['tinggi_badan'])) {
+            $tinggiMeter = $data['tinggi_badan'] / 100;
+            $data['bmi'] = round($data['berat_badan'] / ($tinggiMeter * $tinggiMeter), 1);
+        }
+        
+        $rekamMedis->update($data);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Rekam medis berhasil diperbarui',
+            'data' => $rekamMedis->load(['pasien', 'dokter'])
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $rekamMedis = RekamMedis::findOrFail($id);
+        $rekamMedis->delete();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Rekam medis berhasil dihapus'
         ]);
     }
 }

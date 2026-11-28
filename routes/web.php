@@ -28,6 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('pasien', PasienController::class);
     Route::resource('jadwal-dokter', JadwalDokterController::class);
     Route::resource('registrasi', RegistrasiController::class);
+    Route::get('/api/registrasi/available-doctors', [RegistrasiController::class, 'getAvailableDoctors']);
+    Route::get('/api/registrasi/booked-slots', [RegistrasiController::class, 'getBookedSlots']);
     Route::resource('antrean', AntreanController::class);
     Route::get('antrean-v2', [AntreanV2Controller::class, 'index'])->name('antrean-v2.index');
     Route::resource('rekam-medis', RekamMedisController::class);
@@ -40,6 +42,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/rekam-medis/search-pasien', [RekamMedisController::class, 'searchPasien']);
     Route::get('/api/rekam-medis/pasien/{id}', [RekamMedisController::class, 'getPasienDetail']);
     Route::get('/api/rekam-medis/{id}', [RekamMedisController::class, 'show']);
+    Route::get('/api/dokters', [RekamMedisController::class, 'getDokters']);
+    Route::post('/api/rekam-medis', [RekamMedisController::class, 'store']);
+    Route::put('/api/rekam-medis/{id}', [RekamMedisController::class, 'update']);
+    Route::delete('/api/rekam-medis/{id}', [RekamMedisController::class, 'destroy']);
     Route::get('/api/jadwal-dokter/{dokter_id}', function($dokter_id) {
         return \App\Models\JadwalDokter::where('dokter_id', $dokter_id)
             ->where('status', 'aktif')

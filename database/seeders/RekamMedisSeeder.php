@@ -44,16 +44,39 @@ class RekamMedisSeeder extends Seeder
         ];
 
         $keluhanList = [
-            'Demam tinggi sejak 3 hari',
-            'Batuk dan pilek',
-            'Sakit kepala berkepanjangan',
-            'Nyeri perut',
-            'Sesak napas',
-            'Pusing dan mual',
-            'Nyeri dada',
-            'Diare',
-            'Kontrol rutin diabetes',
-            'Kontrol tekanan darah'
+            'Demam tinggi sejak 3 hari yang lalu',
+            'Batuk berdahak dan pilek',
+            'Sakit kepala berkepanjangan disertai pusing',
+            'Nyeri perut bagian atas setelah makan',
+            'Sesak napas saat beraktivitas',
+            'Pusing berputar dan mual',
+            'Nyeri dada sebelah kiri',
+            'Diare lebih dari 3 kali sehari',
+            'Kontrol rutin diabetes mellitus',
+            'Kontrol tekanan darah tinggi',
+            'Nyeri punggung bawah',
+            'Tenggorokan sakit saat menelan',
+            'Mata merah dan berair',
+            'Batuk kering tidak berdahak'
+        ];
+
+        $catatanDokter = [
+            'Pasien dianjurkan istirahat cukup dan minum air putih yang banyak',
+            'Kontrol kembali jika keluhan tidak membaik dalam 3-5 hari',
+            'Hindari makanan pedas dan asam, makan teratur',
+            'Lakukan olahraga ringan secara teratur',
+            'Jaga pola makan dan hindari stress',
+            'Konsumsi obat sesuai anjuran dokter',
+            'Kontrol rutin setiap bulan untuk pemantauan',
+            'Hindari alergen dan jaga kebersihan lingkungan'
+        ];
+
+        $klinikList = [
+            'Poli Umum',
+            'Poli Penyakit Dalam',
+            'Poli Anak',
+            'Poli Jantung',
+            'Poli THT'
         ];
 
         $today = Carbon::now();
@@ -73,7 +96,7 @@ class RekamMedisSeeder extends Seeder
                     'pasien_id' => $pasien->id,
                     'dokter_id' => $dokters->random()->id,
                     'tanggal_kunjungan' => $date->format('Y-m-d'),
-                    'klinik' => 'Poli Umum',
+                    'klinik' => $klinikList[array_rand($klinikList)],
                     'keluhan_utama' => $keluhanList[array_rand($keluhanList)],
                     'tekanan_darah' => rand(110, 140) . '/' . rand(70, 90),
                     'suhu_badan' => rand(360, 390) / 10,
@@ -85,10 +108,10 @@ class RekamMedisSeeder extends Seeder
                     'saturasi_oksigen' => rand(95, 100),
                     'diagnosa_code' => $diag['code'],
                     'diagnosa' => $diag['name'],
-                    'rencana_tindakan' => 'Terapi medikamentosa dan istirahat cukup',
+                    'rencana_tindakan' => 'Terapi medikamentosa, istirahat cukup, dan kontrol kembali jika keluhan tidak membaik',
                     'resep_obat' => json_encode([$medications[array_rand($medications)]]),
-                    'hasil_lab' => rand(0, 1) ? 'Pemeriksaan darah lengkap: Normal' : null,
-                    'catatan_dokter' => 'Kontrol kembali jika keluhan tidak membaik dalam 3-5 hari',
+                    'hasil_lab' => rand(0, 1) ? 'Pemeriksaan darah lengkap: Hemoglobin 13.5 g/dL, Leukosit 8.500/μL, Trombosit 250.000/μL - Hasil dalam batas normal' : null,
+                    'catatan_dokter' => $catatanDokter[array_rand($catatanDokter)],
                     'status' => ['draft', 'completed', 'reviewed'][array_rand(['draft', 'completed', 'reviewed'])],
                     'created_at' => $date,
                     'updated_at' => $date,

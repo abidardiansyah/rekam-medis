@@ -145,7 +145,7 @@
         <input
             id="searchInput"
             type="text"
-            placeholder="Search patient by name or MR number..."
+            placeholder="Cari pasien berdasarkan nama atau nomor RM..."
             class="patient-search-input"
             autocomplete="off"
         />
@@ -199,27 +199,27 @@
                     </div>
                 </div>
                 
-                <!-- Address -->
+                <!-- Alamat -->
                 <div class="section-divider">
-                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Address</h3>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Alamat</h3>
                     <p id="patientAddress" class="text-sm"></p>
                 </div>
                 
-                <!-- Guarantor -->
+                <!-- Penjamin -->
                 <div class="section-divider">
-                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Guarantor</h3>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Penjamin</h3>
                     <div class="text-sm">
-                        <span class="text-gray-600 block mb-1">Type:</span>
+                        <span class="text-gray-600 block mb-1">Tipe:</span>
                         <span id="patientGuarantor" class="font-medium">Umum</span>
                     </div>
                 </div>
                 
-                <!-- Statistics -->
+                <!-- Statistik -->
                 <div class="section-divider">
-                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Statistics</h3>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-3">Statistik</h3>
                     <div class="stats-box">
                         <p id="totalRecords" class="text-4xl font-bold text-blue-600">0</p>
-                        <p class="text-sm text-gray-600 mt-2">Total Records</p>
+                        <p class="text-sm text-gray-600 mt-2">Total Rekam Medis</p>
                     </div>
                 </div>
             </div>
@@ -228,17 +228,22 @@
         <!-- Right: Records Table -->
         <div>
             <div class="records-card">
-                <!-- Filters -->
-                <div class="flex flex-wrap gap-2" style="margin-bottom: 16px;">
-                    <select id="filterDoctor" class="px-3 py-2 border rounded-md text-sm bg-white">
-                        <option value="">All Doctors</option>
-                    </select>
-                    <select id="filterStatus" class="px-3 py-2 border rounded-md text-sm bg-white">
-                        <option value="">All Status</option>
-                        <option value="draft">Draft</option>
-                        <option value="completed">Completed</option>
-                        <option value="reviewed">Reviewed</option>
-                    </select>
+                <!-- Filters & Add Button -->
+                <div class="flex justify-between items-center" style="margin-bottom: 16px;">
+                    <div class="flex flex-wrap gap-2">
+                        <select id="filterDoctor" class="px-3 py-2 border rounded-md text-sm bg-white">
+                            <option value="">Semua Dokter</option>
+                        </select>
+                        <select id="filterStatus" class="px-3 py-2 border rounded-md text-sm bg-white">
+                            <option value="">Semua Status</option>
+                            <option value="draft">Draft</option>
+                            <option value="completed">Selesai</option>
+                            <option value="reviewed">Ditinjau</option>
+                        </select>
+                    </div>
+                    <button onclick="openAddRecordModal()" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">
+                        <i class="fas fa-plus" style="margin-right: 6px;"></i>Tambah Record
+                    </button>
                 </div>
 
                 <!-- Table -->
@@ -246,12 +251,12 @@
                     <table class="w-full records-table">
                         <thead class="bg-gray-50 border-b">
                             <tr>
-                                <th class="text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                                <th class="text-left text-xs font-medium text-gray-500 uppercase">Doctor</th>
-                                <th class="text-left text-xs font-medium text-gray-500 uppercase">Clinic</th>
+                                <th class="text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                <th class="text-left text-xs font-medium text-gray-500 uppercase">Dokter</th>
+                                <th class="text-left text-xs font-medium text-gray-500 uppercase">Klinik</th>
                                 <th class="text-left text-xs font-medium text-gray-500 uppercase">Diagnosis</th>
-                                <th class="text-left text-xs font-medium text-gray-500 uppercase">BP</th>
-                                <th class="text-left text-xs font-medium text-gray-500 uppercase">Temp</th>
+                                <th class="text-left text-xs font-medium text-gray-500 uppercase">TD</th>
+                                <th class="text-left text-xs font-medium text-gray-500 uppercase">Suhu</th>
                                 <th class="text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                             </tr>
                         </thead>
@@ -270,15 +275,117 @@
                     <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
-                <p class="text-lg font-medium text-gray-600 mb-2">Select a patient to view medical records</p>
-                <p class="text-sm text-gray-600">Search and select a patient from the dropdown above</p>
+                <p class="text-lg font-medium text-gray-600 mb-2">Pilih pasien untuk melihat rekam medis</p>
+                <p class="text-sm text-gray-600">Cari dan pilih pasien dari dropdown di atas</p>
             </div>
         </div>
     </div>
 </div>
 
 
-<!-- Modal -->
+<!-- Add Record Modal -->
+<div id="addModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(0, 0, 0, 0.5);">
+    <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px;">
+        <div style="width: min(880px, 90vw); max-height: 85vh; display: flex; flex-direction: column; background: #ffffff; border-radius: 14px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15); overflow: hidden;">
+            <div style="padding: 24px 28px; border-bottom: 1px solid #E5E7EB;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <h2 style="font-size: 20px; font-weight: 600; color: #111827; margin: 0;">Tambah Rekam Medis</h2>
+                    <button onclick="closeAddModal()" style="padding: 8px; border: none; background: transparent; cursor: pointer; border-radius: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div style="flex: 1; overflow-y: auto; padding: 28px;">
+                <form id="addRecordForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Dokter *</label>
+                            <select name="dokter_id" required style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                                <option value="">Pilih Dokter</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Tanggal Kunjungan *</label>
+                            <input type="date" name="tanggal_kunjungan" required style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Keluhan Utama *</label>
+                        <textarea name="keluhan_utama" required rows="3" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none; resize: vertical;"></textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Tekanan Darah</label>
+                            <input type="text" name="tekanan_darah" placeholder="120/80" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Suhu (°C)</label>
+                            <input type="number" name="suhu_badan" step="0.1" placeholder="36.5" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Nadi (bpm)</label>
+                            <input type="number" name="nadi" placeholder="80" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Pernapasan (/min)</label>
+                            <input type="number" name="pernapasan" placeholder="20" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Berat Badan (kg)</label>
+                            <input type="number" name="berat_badan" step="0.1" placeholder="70" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Tinggi Badan (cm)</label>
+                            <input type="number" name="tinggi_badan" step="0.1" placeholder="170" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Saturasi Oksigen (%)</label>
+                            <input type="number" name="saturasi_oksigen" placeholder="98" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Diagnosis *</label>
+                            <input type="text" name="diagnosa" required placeholder="Diagnosis penyakit" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Kode Diagnosis</label>
+                            <input type="text" name="diagnosa_code" placeholder="ICD-10" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Rencana Tindakan</label>
+                        <textarea name="rencana_tindakan" rows="2" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none; resize: vertical;"></textarea>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Hasil Lab</label>
+                        <textarea name="hasil_lab" rows="2" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none; resize: vertical;"></textarea>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Catatan Dokter</label>
+                        <textarea name="catatan_dokter" rows="2" style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none; resize: vertical;"></textarea>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px;">Status *</label>
+                        <select name="status" required style="width: 100%; padding: 10px 12px; border: none; border-bottom: 2px solid #E5E7EB; font-size: 14px; outline: none;">
+                            <option value="draft">Draft</option>
+                            <option value="completed">Selesai</option>
+                            <option value="reviewed">Ditinjau</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div style="padding: 20px 28px; border-top: 1px solid #E5E7EB; display: flex; justify-content: flex-end; gap: 12px;">
+                <button type="button" onclick="closeAddModal()" class="btn btn-secondary">Batal</button>
+                <button type="submit" form="addRecordForm" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Modal -->
 <div id="modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: rgba(0, 0, 0, 0.5);">
     <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px;">
         <div style="width: min(1000px, 90vw); max-height: 85vh; display: flex; flex-direction: column; background: #ffffff; border-radius: 14px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15); overflow: hidden;">
@@ -286,7 +393,7 @@
             <div style="padding: 24px 28px; border-bottom: 1px solid #E5E7EB; background: linear-gradient(to right, #EFF6FF, #ffffff);">
                 <div style="display: flex; align-items: flex-start; justify-content: space-between;">
                     <div>
-                        <h2 style="font-size: 22px; font-weight: 700; color: #111827; margin: 0;">Medical Record Details</h2>
+                        <h2 style="font-size: 22px; font-weight: 700; color: #111827; margin: 0;">Detail Rekam Medis</h2>
                         <p id="modalSubtitle" style="font-size: 14px; color: #6B7280; margin: 6px 0 0 0;"></p>
                     </div>
                     <button id="closeModalBtn" style="padding: 8px; border: none; background: transparent; cursor: pointer; border-radius: 8px; transition: background 0.2s;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='transparent'">
@@ -311,7 +418,7 @@
                     
                     <!-- Doctor Card -->
                     <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 10px; padding: 20px;">
-                        <p style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Doctor Information</p>
+                        <p style="font-size: 12px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 12px 0;">Informasi Dokter</p>
                         <p id="modalDoctor" style="font-size: 18px; font-weight: 600; color: #111827; margin: 0 0 8px 0;"></p>
                         <p id="modalDoctorSpec" style="font-size: 14px; color: #6B7280; margin: 0;"></p>
                     </div>
@@ -319,14 +426,14 @@
 
                 <!-- Chief Complaint -->
                 <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-                    <h3 style="font-size: 15px; font-weight: 600; color: #1E40AF; margin: 0 0 10px 0;">Chief Complaint</h3>
+                    <h3 style="font-size: 15px; font-weight: 600; color: #1E40AF; margin: 0 0 10px 0;">Keluhan Utama</h3>
                     <p id="modalComplaint" style="font-size: 14px; color: #374151; margin: 0; line-height: 1.6;"></p>
                 </div>
 
                 <!-- Vital Signs -->
                 <div style="border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden; margin-bottom: 16px;">
                     <button type="button" onclick="toggleSection('vitals')" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #F9FAFB; border: none; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='#F9FAFB'">
-                        <h3 style="font-size: 16px; font-weight: 600; color: #111827; margin: 0;">Vital Signs</h3>
+                        <h3 style="font-size: 16px; font-weight: 600; color: #111827; margin: 0;">Tanda Vital</h3>
                         <svg id="vitalsIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #6B7280;">
                             <path d="m18 15-6-6-6 6"></path>
                         </svg>
@@ -339,18 +446,18 @@
                 <!-- Diagnosis & Treatment -->
                 <div style="border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden; margin-bottom: 16px;">
                     <button type="button" onclick="toggleSection('diagnosis')" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #F9FAFB; border: none; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='#F9FAFB'">
-                        <h3 style="font-size: 16px; font-weight: 600; color: #111827; margin: 0;">Diagnosis & Treatment</h3>
+                        <h3 style="font-size: 16px; font-weight: 600; color: #111827; margin: 0;">Diagnosis & Perawatan</h3>
                         <svg id="diagnosisIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #6B7280;">
                             <path d="m18 15-6-6-6 6"></path>
                         </svg>
                     </button>
                     <div id="diagnosisContent" style="padding: 20px; background: #ffffff;">
                         <div style="margin-bottom: 20px;">
-                            <p style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0;">Primary Diagnosis</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0;">Diagnosis Utama</p>
                             <div id="modalDiagnosis"></div>
                         </div>
                         <div>
-                            <p style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0;">Treatment Plan</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0;">Rencana Perawatan</p>
                             <p id="modalTreatment" style="font-size: 14px; color: #374151; margin: 0; line-height: 1.6;"></p>
                         </div>
                     </div>
@@ -359,7 +466,7 @@
                 <!-- Prescriptions -->
                 <div style="border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden; margin-bottom: 16px;">
                     <button type="button" onclick="toggleSection('prescription')" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #F9FAFB; border: none; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='#F9FAFB'">
-                        <h3 style="font-size: 16px; font-weight: 600; color: #111827; margin: 0;">Prescriptions <span id="rxCount" style="color: #6B7280;"></span></h3>
+                        <h3 style="font-size: 16px; font-weight: 600; color: #111827; margin: 0;">Resep Obat <span id="rxCount" style="color: #6B7280;"></span></h3>
                         <svg id="prescriptionIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #6B7280;">
                             <path d="m18 15-6-6-6 6"></path>
                         </svg>
@@ -372,18 +479,18 @@
                 <!-- Lab Results & Notes -->
                 <div style="border: 1px solid #E5E7EB; border-radius: 10px; overflow: hidden;">
                     <button type="button" onclick="toggleSection('notes')" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #F9FAFB; border: none; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='#F9FAFB'">
-                        <h3 style="font-size: 16px; font-weight: 600; color: #111827; margin: 0;">Lab Results & Notes</h3>
+                        <h3 style="font-size: 16px; font-weight: 600; color: #111827; margin: 0;">Hasil Lab & Catatan</h3>
                         <svg id="notesIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #6B7280;">
                             <path d="m18 15-6-6-6 6"></path>
                         </svg>
                     </button>
                     <div id="notesContent" style="padding: 20px; background: #ffffff;">
                         <div style="margin-bottom: 20px;">
-                            <p style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0;">Lab Results</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0;">Hasil Lab</p>
                             <p id="modalLabResults" style="font-size: 14px; color: #374151; margin: 0; line-height: 1.6;"></p>
                         </div>
                         <div>
-                            <p style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0;">Doctor's Notes</p>
+                            <p style="font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 10px 0;">Catatan Dokter</p>
                             <p id="modalDoctorNotes" style="font-size: 14px; color: #374151; margin: 0; line-height: 1.6;"></p>
                         </div>
                     </div>
@@ -393,7 +500,7 @@
             <!-- Footer -->
             <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; border-top: 1px solid #E5E7EB; background: #F9FAFB;">
                 <div id="modalStatus"></div>
-                <button onclick="closeModal()" style="padding: 10px 24px; background: #3B82F6; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#2563EB'" onmouseout="this.style.background='#3B82F6'">Close</button>
+                <button onclick="closeModal()" style="padding: 10px 24px; background: #3B82F6; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#2563EB'" onmouseout="this.style.background='#3B82F6'">Tutup</button>
             </div>
         </div>
     </div>
@@ -401,6 +508,7 @@
 
 <script>
 let selectedPatientId = null;
+let selectedPatient = null;
 let allRecords = [];
 let currentRecord = null;
 
@@ -462,6 +570,7 @@ clearBtn.addEventListener('click', () => {
 
 async function selectPatient(id, name, rm) {
     selectedPatientId = id;
+    selectedPatient = {id, nama: name, no_rm: rm};
     searchInput.value = `${name} (${rm})`;
     clearBtn.style.display = 'flex';
     dropdown.style.display = 'none';
@@ -484,7 +593,7 @@ async function selectPatient(id, name, rm) {
     // Populate doctors filter
     const uniqueDoctors = [...new Set(data.records.map(r => r.dokter?.nama).filter(Boolean))];
     const doctorSelect = document.getElementById('filterDoctor');
-    doctorSelect.innerHTML = '<option value="">All Doctors</option>' + uniqueDoctors.map(d => `<option value="${d}">${d}</option>`).join('');
+    doctorSelect.innerHTML = '<option value="">Semua Dokter</option>' + uniqueDoctors.map(d => `<option value="${d}">${d}</option>`).join('');
     
     renderRecords();
     
@@ -516,8 +625,8 @@ function renderRecords() {
                 <td>${r.dokter?.nama || '-'}</td>
                 <td>${r.dokter?.spesialisasi || '-'}</td>
                 <td>
-                    <p class="font-medium">${r.diagnosis_utama}</p>
-                    <p class="text-xs text-gray-600 font-mono" style="margin-top: 2px;">${r.kode_diagnosis || ''}</p>
+                    <p class="font-medium">${r.diagnosa || '-'}</p>
+                    <p class="text-xs text-gray-600 font-mono" style="margin-top: 2px;">${r.diagnosa_code || ''}</p>
                 </td>
                 <td>${r.tekanan_darah || '-'}</td>
                 <td>${r.suhu ? r.suhu.toFixed(1) + '°C' : '-'}</td>
@@ -592,12 +701,12 @@ async function openRecord(id) {
         // Diagnosis
         const diagnosisHTML = `
             <div style="display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; background: #DBEAFE; border: 1px solid #93C5FD; border-radius: 8px;">
-                <span style="font-size: 16px; font-weight: 600; color: #1E40AF;">${currentRecord.diagnosis_utama || 'No diagnosis'}</span>
-                ${currentRecord.kode_diagnosis ? `<span style="font-size: 13px; font-family: monospace; color: #3B82F6; opacity: 0.8;">${currentRecord.kode_diagnosis}</span>` : ''}
+                <span style="font-size: 16px; font-weight: 600; color: #1E40AF;">${currentRecord.diagnosa || 'Tidak ada diagnosis'}</span>
+                ${currentRecord.diagnosa_code ? `<span style="font-size: 13px; font-family: monospace; color: #3B82F6; opacity: 0.8;">${currentRecord.diagnosa_code}</span>` : ''}
             </div>
         `;
         document.getElementById('modalDiagnosis').innerHTML = diagnosisHTML;
-        document.getElementById('modalTreatment').textContent = currentRecord.rencana_tindakan || 'No treatment plan recorded';
+        document.getElementById('modalTreatment').textContent = currentRecord.rencana_tindakan || 'Tidak ada rencana perawatan';
         
         // Prescriptions
         const prescriptions = currentRecord.resep_obat || [];
@@ -613,12 +722,12 @@ async function openRecord(id) {
             `).join('');
             document.getElementById('modalPrescriptions').innerHTML = rxHTML;
         } else {
-            document.getElementById('modalPrescriptions').innerHTML = '<p style="font-size: 14px; color: #9CA3AF;">No prescriptions</p>';
+            document.getElementById('modalPrescriptions').innerHTML = '<p style="font-size: 14px; color: #9CA3AF;">Tidak ada resep</p>';
         }
         
         // Lab Results & Notes
-        document.getElementById('modalLabResults').textContent = currentRecord.hasil_lab || 'No lab results available';
-        document.getElementById('modalDoctorNotes').textContent = currentRecord.catatan_dokter || 'No additional notes';
+        document.getElementById('modalLabResults').textContent = currentRecord.hasil_lab || 'Tidak ada hasil lab';
+        document.getElementById('modalDoctorNotes').textContent = currentRecord.catatan_dokter || 'Tidak ada catatan tambahan';
         
         // Status
         const statusColors = {
@@ -628,8 +737,8 @@ async function openRecord(id) {
         };
         const statusLabels = {
             draft: 'Draft',
-            completed: 'Completed',
-            reviewed: 'Reviewed'
+            completed: 'Selesai',
+            reviewed: 'Ditinjau'
         };
         document.getElementById('modalStatus').innerHTML = `<span style="padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; ${statusColors[currentRecord.status] || statusColors.draft}">${statusLabels[currentRecord.status] || currentRecord.status}</span>`;
         
@@ -638,7 +747,7 @@ async function openRecord(id) {
         document.body.style.overflow = 'hidden';
     } catch (error) {
         console.error('Error loading medical record:', error);
-        alert('Failed to load medical record details. Please try again.');
+        alert('Gagal memuat detail rekam medis. Silakan coba lagi.');
     }
 }
 
@@ -646,6 +755,65 @@ function closeModal() {
     modal.style.display = 'none';
     document.body.style.overflow = '';
 }
+
+async function openAddRecordModal() {
+    if (!selectedPatient) {
+        alert('Silakan pilih pasien terlebih dahulu');
+        return;
+    }
+    
+    // Load doctors
+    const res = await fetch('/api/dokters');
+    const dokters = await res.json();
+    const dokterSelect = document.querySelector('#addRecordForm select[name="dokter_id"]');
+    dokterSelect.innerHTML = '<option value="">Pilih Dokter</option>' + 
+        dokters.map(d => `<option value="${d.id}">${d.nama} - ${d.spesialisasi}</option>`).join('');
+    
+    // Set today's date
+    document.querySelector('#addRecordForm input[name="tanggal_kunjungan"]').valueAsDate = new Date();
+    
+    document.getElementById('addModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAddModal() {
+    document.getElementById('addModal').style.display = 'none';
+    document.body.style.overflow = '';
+    document.getElementById('addRecordForm').reset();
+}
+
+document.getElementById('addRecordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    data.pasien_id = selectedPatient.id;
+    
+    try {
+        const res = await fetch('/api/rekam-medis', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await res.json();
+        
+        if (result.success) {
+            closeAddModal();
+            // Reload patient data
+            await selectPatient(selectedPatient.id, selectedPatient.nama, selectedPatient.no_rm);
+            alert('Rekam medis berhasil ditambahkan');
+        } else {
+            alert('Gagal menambahkan rekam medis');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat menyimpan data');
+    }
+});
 
 function toggleSection(section) {
     const content = document.getElementById(section + 'Content');

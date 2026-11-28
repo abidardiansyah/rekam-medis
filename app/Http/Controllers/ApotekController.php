@@ -32,14 +32,12 @@ class ApotekController extends Controller
     {
         $validated = $request->validate([
             'kode_obat' => 'required|string|unique:apoteks,kode_obat',
-            'nama_obat' => 'required|string|max:255',
+            'nama_obat' => 'required|string',
             'kategori' => 'required|string',
             'satuan' => 'required|string',
-            'stok' => 'required|integer|min:0',
-            'harga' => 'required|numeric|min:0',
             'tanggal_kadaluarsa' => 'nullable|date',
             'deskripsi' => 'nullable|string',
-            'status' => 'required|in:tersedia,habis,kadaluarsa'
+            'status' => 'required|in:tersedia,habis,kadaluarsa',
         ]);
 
         Apotek::create($validated);
@@ -51,11 +49,9 @@ class ApotekController extends Controller
     {
         $validated = $request->validate([
             'kode_obat' => 'required|string|unique:apoteks,kode_obat,' . $apotek->id,
-            'nama_obat' => 'required|string|max:255',
+            'nama_obat' => 'required|string',
             'kategori' => 'required|string',
             'satuan' => 'required|string',
-            'stok' => 'required|integer|min:0',
-            'harga' => 'required|numeric|min:0',
             'tanggal_kadaluarsa' => 'nullable|date',
             'deskripsi' => 'nullable|string',
             'status' => 'required|in:tersedia,habis,kadaluarsa'

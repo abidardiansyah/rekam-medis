@@ -1,32 +1,30 @@
 @extends('layouts.app')
 
-@section('title', 'Work Schedules')
+@section('title', 'Jadwal Kerja')
 
 @section('content')
 <div class="page-header">
   <div class="page-block">
     <ul class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-      <li class="breadcrumb-item" aria-current="page">Work Schedules</li>
+      <li class="breadcrumb-item" aria-current="page">Jadwal Kerja</li>
     </ul>
     <div class="page-header-title">
-      <h2 class="mb-0">Work Schedules</h2>
+      <h2 class="mb-0">Jadwal Kerja</h2>
     </div>
   </div>
 </div>
 
-<div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-header" style="padding: 20px 24px;">
-        <div class="d-flex align-items-center justify-content-between">
-          <h5 class="mb-0" style="font-size: 16px; font-weight: 600;">Manage Work Schedules</h5>
-          <button type="button" class="btn btn-primary" data-pc-toggle="modal" data-pc-target="#createModal" style="padding: 8px 16px; font-size: 14px; border-radius: 6px;">
-            <i class="ti ti-plus" style="font-size: 16px;"></i> Add Schedule
-          </button>
-        </div>
+<div class="grid grid-cols-12 gap-x-6">
+  <div class="col-span-12">
+    <div class="card table-card">
+      <div class="card-header flex items-center justify-between">
+        <h5>Kelola Jadwal Kerja</h5>
+        <button type="button" class="btn btn-primary" data-pc-toggle="modal" data-pc-target="#createModal">
+          <i class="ti ti-plus"></i> Tambah Jadwal
+        </button>
       </div>
-      <div class="card-body" style="padding: 24px;">
+      <div class="card-body !pt-3">
         @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-bottom: 20px;">
           {{ session('success') }}
@@ -35,75 +33,60 @@
         @endif
 
         <div class="table-responsive">
-          <table class="table table-hover" style="margin-bottom: 0;">
+          <table class="table table-hover" id="pc-dt-simple">
             <thead>
               <tr>
-                <th style="padding: 12px 16px; font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #E5E7EB;">Name</th>
-                <th style="padding: 12px 16px; font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #E5E7EB; width: 180px;">Code</th>
-                <th style="padding: 12px 16px; font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #E5E7EB; width: 140px;">Time</th>
-                <th style="padding: 12px 16px; font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #E5E7EB; width: 120px;">Color</th>
-                <th style="padding: 12px 16px; font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #E5E7EB; width: 130px;">Assignments</th>
-                <th style="padding: 12px 16px; font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #E5E7EB; width: 100px;">Status</th>
-                <th style="padding: 12px 16px; font-size: 13px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #E5E7EB; width: 140px; text-align: center;">Actions</th>
+                <th>Nama</th>
+                <th>Kode</th>
+                <th>Waktu</th>
+                <th>Warna</th>
+                <th>Penugasan</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               @forelse($schedules as $schedule)
-              <tr style="border-bottom: 1px solid #F3F4F6;">
-                <td style="padding: 12px 16px; vertical-align: middle;">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 4px; height: 36px; background: {{ $schedule->color }}; border-radius: 2px; flex-shrink: 0;"></div>
+              <tr>
+                <td>
+                  <div class="flex items-center">
+                    <div style="width: 4px; height: 36px; background: {{ $schedule->color }}; border-radius: 2px; margin-right: 12px;"></div>
                     <div>
-                      <div style="font-size: 14px; font-weight: 600; color: #111827;">{{ $schedule->name }}</div>
-                      <div style="font-size: 12px; color: #6B7280;">{{ $schedule->description }}</div>
+                      <h6 class="mb-0">{{ $schedule->name }}</h6>
+                      <small class="text-muted">{{ $schedule->description }}</small>
                     </div>
                   </div>
                 </td>
-                <td style="padding: 16px; vertical-align: middle;">
-                  <code style="font-size: 13px; padding: 4px 8px; background: #F3F4F6; border-radius: 4px; color: #374151;">{{ $schedule->code }}</code>
-                </td>
-                <td style="padding: 16px; vertical-align: middle;">
-                  <div style="font-size: 14px; color: #374151; white-space: nowrap;">
-                    {{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}
-                  </div>
-                </td>
-                <td style="padding: 16px; vertical-align: middle;">
-                  <span class="badge" style="background: {{ $schedule->color }}; color: white; font-size: 12px; padding: 6px 10px; font-weight: 500;">{{ $schedule->color }}</span>
-                </td>
-                <td style="padding: 16px; vertical-align: middle;">
-                  <span class="badge bg-info" style="font-size: 12px; padding: 6px 10px; font-weight: 500;">{{ $schedule->assignments->count() }} assigned</span>
-                </td>
-                <td style="padding: 16px; vertical-align: middle;">
+                <td><code>{{ $schedule->code }}</code></td>
+                <td>{{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}</td>
+                <td><span class="badge" style="background: {{ $schedule->color }}; color: white;">{{ $schedule->color }}</span></td>
+                <td><span class="badge bg-info">{{ $schedule->assignments->count() }} assigned</span></td>
+                <td>
                   @if($schedule->status === 'active')
-                    <span class="badge bg-success" style="font-size: 12px; padding: 6px 10px; font-weight: 500;">Active</span>
+                    <span class="text-success-500"><i class="fas fa-circle text-[10px] mr-2.5"></i> Aktif</span>
                   @else
-                    <span class="badge bg-secondary" style="font-size: 12px; padding: 6px 10px; font-weight: 500;">Inactive</span>
+                    <span class="text-secondary-500"><i class="fas fa-circle text-[10px] mr-2.5"></i> Nonaktif</span>
                   @endif
                 </td>
-                <td style="padding: 16px; vertical-align: middle; text-align: center;">
-                  <div class="d-inline-flex" style="gap: 6px;">
-                    <a href="{{ route('work-schedules.assign', $schedule) }}" class="btn btn-sm btn-info" title="Assign Staff" style="padding: 6px 10px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;">
-                      <i class="ti ti-users" style="font-size: 16px;"></i>
-                    </a>
-                    <button type="button" class="btn btn-sm btn-warning" title="Edit" data-pc-toggle="modal" data-pc-target="#editModal{{ $schedule->id }}" style="padding: 6px 10px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;">
-                      <i class="ti ti-edit" style="font-size: 16px;"></i>
+                <td>
+                  <a href="{{ route('work-schedules.assign', $schedule) }}" class="w-8 h-8 rounded-xl inline-flex items-center justify-center btn-link-secondary" title="Assign Staff">
+                    <i class="ti ti-users text-xl leading-none"></i>
+                  </a>
+                  <button type="button" class="w-8 h-8 rounded-xl inline-flex items-center justify-center btn-link-secondary" data-pc-toggle="modal" data-pc-target="#editModal{{ $schedule->id }}" title="Edit">
+                    <i class="ti ti-edit text-xl leading-none"></i>
+                  </button>
+                  <form action="{{ route('work-schedules.destroy', $schedule) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="w-8 h-8 rounded-xl inline-flex items-center justify-center btn-link-secondary" title="Delete">
+                      <i class="ti ti-trash text-xl leading-none"></i>
                     </button>
-                    <form action="{{ route('work-schedules.destroy', $schedule) }}" method="POST" style="display: inline-block; margin: 0;" onsubmit="return confirm('Are you sure?')">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" class="btn btn-sm btn-danger" title="Delete" style="padding: 6px 10px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;">
-                        <i class="ti ti-trash" style="font-size: 16px;"></i>
-                      </button>
-                    </form>
-                  </div>
+                  </form>
                 </td>
               </tr>
               @empty
               <tr>
-                <td colspan="7" class="text-center" style="padding: 48px 16px;">
-                  <i class="ti ti-calendar-off" style="font-size: 56px; color: #D1D5DB; display: block; margin-bottom: 12px;"></i>
-                  <p style="color: #6B7280; font-size: 14px; margin: 0;">No work schedules found</p>
-                </td>
+                <td colspan="7" class="text-center">Belum ada data jadwal kerja</td>
               </tr>
               @endforelse
             </tbody>

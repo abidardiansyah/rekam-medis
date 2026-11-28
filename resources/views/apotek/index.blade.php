@@ -41,7 +41,6 @@
                 <th>Nama Obat</th>
                 <th>Kategori</th>
                 <th>Satuan</th>
-                <th>Stok</th>
                 <th>Status</th>
                 <th>Action</th>
               </tr>
@@ -49,7 +48,6 @@
                 <th><input type="text" name="search_kode_obat" placeholder="Cari kode..." class="form-control form-control-sm" value="{{ request('search_kode_obat') }}"></th>
                 <th><input type="text" name="search_nama_obat" placeholder="Cari nama..." class="form-control form-control-sm" value="{{ request('search_nama_obat') }}"></th>
                 <th><input type="text" name="search_kategori" placeholder="Cari kategori..." class="form-control form-control-sm" value="{{ request('search_kategori') }}"></th>
-                <th></th>
                 <th></th>
                 <th>
                   <select name="search_status" class="form-select form-select-sm">
@@ -69,7 +67,6 @@
                 <td>{{ $apotek->nama_obat }}</td>
                 <td>{{ $apotek->kategori }}</td>
                 <td>{{ $apotek->satuan }}</td>
-                <td>{{ $apotek->stok }}</td>
                 <td>
                   @if($apotek->status === 'tersedia')
                     <span class="text-success-500"><i class="fas fa-circle text-[10px] mr-2.5"></i> Tersedia</span>
@@ -97,7 +94,7 @@
               </tr>
               @empty
               <tr>
-                <td colspan="7" class="text-center">Tidak ada data</td>
+                <td colspan="6" class="text-center">Tidak ada data</td>
               </tr>
               @endforelse
             </tbody>
@@ -140,59 +137,59 @@
 
 <!-- Create Modal -->
 <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true" data-pc-modal-show="false">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 880px;">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Tambah Obat</h5>
-        <button type="button" class="btn-close" data-pc-modal-dismiss="#createModal"></button>
+      <div class="modal-header" style="padding: 18px 24px; border-bottom: 1px solid #E5E7EB;">
+        <h5 class="modal-title" style="font-size: 18px; font-weight: 600; margin: 0;">Tambah Obat</h5>
+        <button type="button" class="btn-close" data-pc-modal-dismiss="#createModal" aria-label="Close"></button>
       </div>
       <form action="{{ route('apotek.store') }}" method="POST">
         @csrf
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Kode Obat <span class="text-danger">*</span></label>
-            <input type="text" name="kode_obat" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Nama Obat <span class="text-danger">*</span></label>
-            <input type="text" name="nama_obat" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Kategori <span class="text-danger">*</span></label>
-            <input type="text" name="kategori" class="form-control" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Satuan <span class="text-danger">*</span></label>
-            <input type="text" name="satuan" class="form-control" placeholder="Tablet, Kapsul, Botol, dll" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Stok <span class="text-danger">*</span></label>
-            <input type="number" name="stok" class="form-control" min="0" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Harga <span class="text-danger">*</span></label>
-            <input type="number" name="harga" class="form-control" min="0" step="0.01" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Tanggal Kadaluarsa</label>
-            <input type="date" name="tanggal_kadaluarsa" class="form-control">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Deskripsi</label>
-            <textarea name="deskripsi" class="form-control" rows="3"></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Status <span class="text-danger">*</span></label>
-            <select name="status" class="form-select" required>
-              <option value="tersedia">Tersedia</option>
-              <option value="habis">Habis</option>
-              <option value="kadaluarsa">Kadaluarsa</option>
-            </select>
+        <div class="modal-body" style="padding: 24px; max-height: 85vh; overflow-y: auto;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Kode Obat <span class="text-danger">*</span></label>
+                <input type="text" name="kode_obat" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Nama Obat <span class="text-danger">*</span></label>
+                <input type="text" name="nama_obat" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Kategori <span class="text-danger">*</span></label>
+                <input type="text" name="kategori" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+              <div style="margin-bottom: 0;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Satuan <span class="text-danger">*</span></label>
+                <input type="text" name="satuan" class="form-control" placeholder="Tablet, Kapsul, Botol, dll" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+            </div>
+            <div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Tanggal Kadaluarsa</label>
+                <input type="date" name="tanggal_kadaluarsa" class="form-control" style="height: 40px; font-size: 14px; padding: 8px 12px;">
+              </div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Deskripsi</label>
+                <textarea name="deskripsi" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 86px; font-size: 14px; resize: none;"></textarea>
+              </div>
+              <div style="margin-bottom: 0;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Status <span class="text-danger">*</span></label>
+                <select name="status" class="form-select" style="height: 40px; font-size: 14px; padding: 8px 12px;" required>
+                  <option value="tersedia">Tersedia</option>
+                  <option value="habis">Habis</option>
+                  <option value="kadaluarsa">Kadaluarsa</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-pc-modal-dismiss="#createModal">Batal</button>
-          <button type="submit" class="btn btn-primary">Simpan</button>
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #E5E7EB; display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-secondary" data-pc-modal-dismiss="#createModal" style="padding: 8px 16px; font-size: 14px;">Batal</button>
+          <button type="submit" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">
+            <i class="ti ti-device-floppy"></i> Simpan
+          </button>
         </div>
       </form>
     </div>
@@ -226,14 +223,6 @@
           <p>{{ $apotek->satuan }}</p>
         </div>
         <div class="mb-3">
-          <label class="form-label fw-bold">Stok</label>
-          <p>{{ $apotek->stok }}</p>
-        </div>
-        <div class="mb-3">
-          <label class="form-label fw-bold">Harga</label>
-          <p>Rp {{ number_format($apotek->harga, 0, ',', '.') }}</p>
-        </div>
-        <div class="mb-3">
           <label class="form-label fw-bold">Tanggal Kadaluarsa</label>
           <p>{{ $apotek->tanggal_kadaluarsa ? $apotek->tanggal_kadaluarsa->format('d/m/Y') : '-' }}</p>
         </div>
@@ -263,60 +252,60 @@
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal{{ $apotek->id }}" tabindex="-1" aria-hidden="true" data-pc-modal-show="false">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 880px;">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Obat</h5>
-        <button type="button" class="btn-close" data-pc-modal-dismiss="#editModal{{ $apotek->id }}"></button>
+      <div class="modal-header" style="padding: 18px 24px; border-bottom: 1px solid #E5E7EB;">
+        <h5 class="modal-title" style="font-size: 18px; font-weight: 600; margin: 0;">Edit Obat</h5>
+        <button type="button" class="btn-close" data-pc-modal-dismiss="#editModal{{ $apotek->id }}" aria-label="Close"></button>
       </div>
       <form action="{{ route('apotek.update', $apotek) }}" method="POST">
         @csrf
         @method('PUT')
-        <div class="modal-body">
-          <div class="mb-3">
-            <label class="form-label">Kode Obat <span class="text-danger">*</span></label>
-            <input type="text" name="kode_obat" class="form-control" value="{{ $apotek->kode_obat }}" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Nama Obat <span class="text-danger">*</span></label>
-            <input type="text" name="nama_obat" class="form-control" value="{{ $apotek->nama_obat }}" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Kategori <span class="text-danger">*</span></label>
-            <input type="text" name="kategori" class="form-control" value="{{ $apotek->kategori }}" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Satuan <span class="text-danger">*</span></label>
-            <input type="text" name="satuan" class="form-control" value="{{ $apotek->satuan }}" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Stok <span class="text-danger">*</span></label>
-            <input type="number" name="stok" class="form-control" value="{{ $apotek->stok }}" min="0" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Harga <span class="text-danger">*</span></label>
-            <input type="number" name="harga" class="form-control" value="{{ $apotek->harga }}" min="0" step="0.01" required>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Tanggal Kadaluarsa</label>
-            <input type="date" name="tanggal_kadaluarsa" class="form-control" value="{{ $apotek->tanggal_kadaluarsa?->format('Y-m-d') }}">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Deskripsi</label>
-            <textarea name="deskripsi" class="form-control" rows="3">{{ $apotek->deskripsi }}</textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Status <span class="text-danger">*</span></label>
-            <select name="status" class="form-select" required>
-              <option value="tersedia" {{ $apotek->status === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
-              <option value="habis" {{ $apotek->status === 'habis' ? 'selected' : '' }}>Habis</option>
-              <option value="kadaluarsa" {{ $apotek->status === 'kadaluarsa' ? 'selected' : '' }}>Kadaluarsa</option>
-            </select>
+        <div class="modal-body" style="padding: 24px; max-height: 85vh; overflow-y: auto;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Kode Obat <span class="text-danger">*</span></label>
+                <input type="text" name="kode_obat" class="form-control" value="{{ $apotek->kode_obat }}" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Nama Obat <span class="text-danger">*</span></label>
+                <input type="text" name="nama_obat" class="form-control" value="{{ $apotek->nama_obat }}" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Kategori <span class="text-danger">*</span></label>
+                <input type="text" name="kategori" class="form-control" value="{{ $apotek->kategori }}" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+              <div style="margin-bottom: 0;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Satuan <span class="text-danger">*</span></label>
+                <input type="text" name="satuan" class="form-control" value="{{ $apotek->satuan }}" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 40px; font-size: 14px;" required>
+              </div>
+            </div>
+            <div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Tanggal Kadaluarsa</label>
+                <input type="date" name="tanggal_kadaluarsa" class="form-control" value="{{ $apotek->tanggal_kadaluarsa?->format('Y-m-d') }}" style="height: 40px; font-size: 14px; padding: 8px 12px;">
+              </div>
+              <div style="margin-bottom: 14px;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Deskripsi</label>
+                <textarea name="deskripsi" class="form-control" style="border: none; border-bottom: 1px solid #E5E7EB; border-radius: 0; padding: 8px 0; height: 86px; font-size: 14px; resize: none;">{{ $apotek->deskripsi }}</textarea>
+              </div>
+              <div style="margin-bottom: 0;">
+                <label class="form-label" style="display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500;">Status <span class="text-danger">*</span></label>
+                <select name="status" class="form-select" style="height: 40px; font-size: 14px; padding: 8px 12px;" required>
+                  <option value="tersedia" {{ $apotek->status === 'tersedia' ? 'selected' : '' }}>Tersedia</option>
+                  <option value="habis" {{ $apotek->status === 'habis' ? 'selected' : '' }}>Habis</option>
+                  <option value="kadaluarsa" {{ $apotek->status === 'kadaluarsa' ? 'selected' : '' }}>Kadaluarsa</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-pc-modal-dismiss="#editModal{{ $apotek->id }}">Batal</button>
-          <button type="submit" class="btn btn-primary">Update</button>
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #E5E7EB; display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-secondary" data-pc-modal-dismiss="#editModal{{ $apotek->id }}" style="padding: 8px 16px; font-size: 14px;">Batal</button>
+          <button type="submit" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px;">
+            <i class="ti ti-device-floppy"></i> Update
+          </button>
         </div>
       </form>
     </div>

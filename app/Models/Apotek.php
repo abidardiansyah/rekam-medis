@@ -11,15 +11,12 @@ class Apotek extends Model
         'nama_obat',
         'kategori',
         'satuan',
-        'stok',
-        'harga',
         'tanggal_kadaluarsa',
         'deskripsi',
         'status'
     ];
 
     protected $casts = [
-        'tanggal_kadaluarsa' => 'date',
-        'harga' => 'decimal:2'
+        'tanggal_kadaluarsa' => 'date'
     ];
 }

@@ -7,7 +7,7 @@
   <div class="page-block">
     <ul class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-      <li class="breadcrumb-item"><a href="{{ route('work-schedules.index') }}">Work Schedules</a></li>
+      <li class="breadcrumb-item"><a href="{{ route('work-schedules.index') }}">Jadwal Kerja</a></li>
       <li class="breadcrumb-item" aria-current="page">Create</li>
     </ul>
     <div class="page-header-title">
